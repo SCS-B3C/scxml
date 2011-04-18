@@ -2,13 +2,10 @@
 SET(KIT_SRCS
   qscxml.cpp
   qscxml.h
-  qscxmlgui.cpp
-  qscxmlgui.h
     )
   
 SET(KIT_MOC_SRCS
   qscxml.h
-  qscxmlgui.h
   )
   
 QT4_WRAP_CPP(KIT_MOC_CPP ${KIT_MOC_SRCS})

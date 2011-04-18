@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/scc">
+        <file>scc.xslt</file>
+    </qresource>
+</RCC>

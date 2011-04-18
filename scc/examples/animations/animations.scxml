@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" xmlns:Qt="http://www.qtsoftware.com scxml-ext"
+        initial="hist">
+  <datamodel>
+    <data id="anim" Qt:type="QPropertyAnimation*" expr="NULL" />
+    <data id="indicator" Qt:type="QObject*" expr="NULL" />
+  </datamodel>
+  <history id="hist" type="deep">
+    <transition target="idle" />
+  </history>
+   <state id="idle">
+    <Qt:property object="_data.indicator" property="opacity" value="0" />
+    <transition target="active" event="ev1()" Qt:animation="_data.anim" />
+   </state>
+   <state id="active">
+    <Qt:property object="_data.indicator" property="opacity" value="1" />
+    <transition target="idle" event="ev1()" Qt:animation="_data.anim" />
+   </state>
+</scxml>

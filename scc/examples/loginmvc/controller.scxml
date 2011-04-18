@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" 
+        xmlns:Qt="http://www.qtsoftware.com scxml-ext"
+        initial="root">
+  <datamodel>
+    <data id="username" Qt:type="QString" />
+    <data id="password" Qt:type="QString" />
+    <data id="loginTimeout" Qt:type="int" expr="10000" />
+    <data id="firstTime" Qt:type="bool" expr="true" />
+    <data id="loginButton" Qt:type="QObject*" expr="NULL" />
+    <data id="logoutButton" Qt:type="QObject*" expr="NULL" />
+    <data id="cancelButton" Qt:type="QObject*" expr="NULL" />
+  </datamodel>
+  <parallel id="root">
+    <state id="business_logic">
+    <initial>
+      <transition target="idle">
+        <if cond="_data.firstTime">
+            <send event="notify_welcome()" />
+          <if cond="!_data.username.isEmpty()">
+            <send event="notify_hello(QString)">
+              <param expr="_data.username" />
+            </send>
+          </if>
+          <assign dataid="firstTime" expr="false" />
+        </if>
+      </transition>
+    </initial>
+    <state id="idle">
+      <onentry><log level="0" label="Info" expr="&quot;Now in Idle&quot;" /><raise event="in_idle" /></onentry>
+      <onexit><log level="0" label="Info" expr="&quot;Now not in Idle&quot;" /><raise event="not_in_idle" /></onexit>
+      <transition target="trying_to_login" event="intent_login()" />
+      <Qt:property object="_data.cancelButton" property="enabled" value="false" />
+    </state>
+    <state id="trying_to_login">
+      <Qt:property object="_data.cancelButton" property="enabled" value="true" />
+      <transition event="cancel_login()" target="idle" />
+      <transition event="login_timeout()" target="loginTimeout" />
+      <onentry>
+        <log level="0" label="Info" expr="&quot;Trying to log in&quot;" />
+        <send event="login_action(QString,QString)">
+          <param expr="_data.username" />
+          <param expr="_data.password" />	
+        </send>
+        <send id="cancel_login_timeout" event="login_timeout()" delay="_data.loginTimeout" />
+      </onentry>
+      <onexit>
+        <cancel id="cancel_login_timeout" />
+      </onexit>
+      <transition event="login_complete(bool)" cond="_event.data[0].toBool()" target="loggedIn" />
+      <transition event="login_complete(bool)" cond="!_event.data[0].toBool()" target="loginError" />      
+    </state>
+    <state id="error" initial="loginError">
+      <Qt:property object="_data.cancelButton" property="enabled" value="false" />
+      <transition event="intent_continue()" target="idle" />
+      <onentry>
+        <raise event="error.login()" />
+      </onentry>
+      <state id="cancelled">
+      <onentry>
+        <send event="notify_cancel()" />
+      </onentry>
+      </state>
+      <state id="loginError">
+        <onentry>
+          <log label="Error" level="1" expr="_data.username + ' ' + _data.password" />
+          <send event="notify_error()" />
+        </onentry>
+      </state>
+      <state id="loginTimeout">
+        <onentry>
+          <log label="Error" level="1" expr="_data.username + ' ' + _data.password" />
+          <send event="notify_timeout()" />
+        </onentry>
+      </state>
+    </state>
+    <state id="loggedIn">
+      <onentry>
+        <send event="notify_loggedIn()" />
+      </onentry>
+      <transition event="intent_continue()" target="active" />
+    </state>
+    <state id="active">
+      <transition event="intent_logout()" target="idle" />
+      <Qt:property object="_data.cancelButton" property="enabled" value="false" />
+    </state>
+    <final id="exit" />
+  </state>
+    <state id="gui" initial="hist">
+      <history id="hist" type="deep">
+        <transition target="gui_idle" />
+      </history>
+       <state id="gui_idle">
+        <Qt:property object="_data.loginButton" property="enabled" value="true" />
+        <Qt:property object="_data.logoutButton" property="enabled" value="false" />
+        <transition target="gui_active" cond="!In(idle)" />
+       </state>
+       <state id="gui_active">
+        <transition target="gui_idle" cond="In(idle)" />
+        <Qt:property object="_data.loginButton" property="enabled" value="false" />
+        <Qt:property object="_data.logoutButton" property="enabled" value="true" />
+       </state>
+    </state>
+  </parallel>
+</scxml>

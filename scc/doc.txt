@@ -1,0 +1,78 @@
+This document describes the expected behaviour of SCC (the Qt State Chart Compiler) in regards to SCXML tags and features.
+
+SCXML
+  Ignored: version, profile, exmode
+    
+STATE
+  Ignored: src
+  
+TRANSITION
+  Ignored: anchor
+  Additional: Qt:animation, a location expression that points to a QPropertyAnimation* object
+  Notes: An event in a transition translates to a Qt signal in the state machine object. "*" would occur on any event. Prefix matching is not supported, but * and done events are supported. 
+        Conditions are C++ boolean expressions.
+PARALLEL
+  Ignored: src
+  
+HISTORY:
+  Notes: The history's default transition cannot have executable content. 
+  
+LOG:
+  Notes: the level of the log translates to QtMsgType. expr is a c++ expression.
+  
+SEND:
+  Partially supported: target (only "_internal")
+  Ignored attributes: type, idlocation, hints
+  Notes: The target attribute can be either empty for a regular event, "_internal" for an internal-queue event, or a location expression to emit a signal in an object.
+
+CANCEL:
+  Notes: ID is a string literal, not an expression
+
+DATA:
+  Ignored attributes: src
+  Additional: Qt:type, to define a C++ type for this data element
+  Notes: A data element is converted to a Qt property of the state-machine object. expr/text are C++ expressions
+
+ASSIGN:
+  Notes: If dataid is present rather than location, the generated code would use the Qt property system to assign the value. expr is a c++ expression.
+    
+PARAM
+  Notes: either name, expr or inline-text can appear, as the parameters are translated to a QVariantList.
+
+SCRIPT
+  Notes: raw C++ code
+  
+Fully supported:
+  INITIAL, FINAL, ONENTRY, ONEXIT, IF, ELSEIF, ELSE, LOG, CANCEL, DATAMODEL
+
+Unsupported:
+    INVOKE, CONTENT, DONEDATA, FINALIZE, ANCHOR, VALIDATE
+
+Qt:property
+  object
+  property
+  value
+  
+Qt:cpp
+  text()
+      
+system variables
+  _event
+  _data
+  _name
+
+
+INVOKE
+CONTENT
+VALIDATE
+DONEDATA
+
+
+script
+Qt:cpp
+cond
+(variables)
+param
+log
+if/elseif/else
+assign

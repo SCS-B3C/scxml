@@ -1,0 +1,21 @@
+isEmpty(QMAKE_SCC) {
+   win32:QMAKE_SCC = $$[QT_INSTALL_BINS]\scc.exe
+   else:QMAKE_SCC = $$[QT_INSTALL_BINS]/scc
+}
+
+isEmpty(QMAKE_MOD_SCC):QMAKE_MOD_SCC = sc_
+
+scc.output  = $$QMAKE_MOD_SCC${QMAKE_FILE_BASE}.h
+scc.commands = $$QMAKE_SCC -i ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+scc.depends = ${QMAKE_FILE_NAME} $$QMAKE_SCC
+scc.input = STATECHARTS
+scc.variable_out = SCC_HEADERS HEADERS GENERATED_FILES
+QMAKE_EXTRA_COMPILERS += scc
+load(moc)
+scc_moc.commands = $$moc_header.commands
+scc_moc.output = $$moc_header.output
+scc_moc.input = SCC_HEADERS
+scc_moc.variable_out = GENERATED_SOURCES
+scc_moc.name = $$moc_header.name
+QMAKE_EXTRA_COMPILERS += scc_moc
+

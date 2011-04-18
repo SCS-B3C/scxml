@@ -1,0 +1,13 @@
+To build:
+    qmake
+    make
+    make install
+
+To use:
+    Add to your .pro file:
+    CONFIG += scc
+    STATECHARTS += path-to-my-statechart.scxml
+
+See the examples, and the documentation (currently only in doc.txt)
+
+

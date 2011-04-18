@@ -1,0 +1,61 @@
+###########################################################################
+#
+#  Library:   MAF
+#
+###########################################################################
+
+#
+# scxmlConfig.cmake - scxml CMake configuration file for external projects.
+#
+
+# The scxml include file directories.
+SET(scxml_INCLUDE_DIRS "@scxml_INCLUDE_DIRS_CONFIG@")
+ 
+# The scxml library directories. Note that if
+# scxml_CONFIGURATION_TYPES is set (see below) then these directories
+# will be the parent directories under which there will be a directory
+# of runtime binaries for each configuration type.
+SET(scxml_LIBRARY_DIRS "@scxml_LIBRARY_DIRS_CONFIG@")
+  
+# The scxml runtime library directories. Note that if
+# scxml_CONFIGURATION_TYPES is set (see below) then these directories
+# will be the parent directories under which there will be a directory
+# of runtime libraries for each configuration type.
+SET(scxml_RUNTIME_LIBRARY_DIRS "@scxml_RUNTIME_LIBRARY_DIRS_CONFIG@")
+ 
+# The location of the Usescxml.cmake file.
+SET(scxml_USE_FILE "@scxml_USE_FILE@")
+  
+ 
+# A scxml install tree always provides one build configuration. 
+# A scxml build tree may provide either one or multiple build 
+# configurations depending on the CMake generator used. 
+# Since scxml can be used either from a build tree or an install 
+# tree it is useful for outside projects to know the configurations available. 
+# If this scxmlConfig.cmake is in a scxml install 
+# tree scxml_CONFIGURATION_TYPES will be empty and 
+# scxml_BUILD_TYPE will be set to the value of
+# CMAKE_BUILD_TYPE used to build scxml. If scxmlConfig.cmake 
+# is in a scxml build tree then scxml_CONFIGURATION_TYPES 
+# and scxml_BUILD_TYPE will have values matching CMAKE_CONFIGURATION_TYPES 
+# and CMAKE_BUILD_TYPE for that build tree (only one will ever be set).
+SET(scxml_CONFIGURATION_TYPES @scxml_CONFIGURATION_TYPES_CONFIG@)
+SET(scxml_BUILD_TYPE @scxml_BUILD_TYPE_CONFIG@)
+
+FIND_LIBRARY(scxml_LIBRARY_DEBUG scxml
+  HINTS ${scxml_LIBRARY_DIRS}/Debug NO_DEFAULT_PATH)
+  
+FIND_LIBRARY(scxml_LIBRARY_RELEASE scxml
+  HINTS ${scxml_LIBRARY_DIRS}/Release NO_DEFAULT_PATH)
+  
+FIND_LIBRARY(scxml_LIBRARY scxml
+    HINTS ${scxml_LIBRARY_DIRS} NO_DEFAULT_PATH)
+  
+IF(scxml_LIBRARY_DEBUG AND scxml_LIBRARY_RELEASE)
+  SET(scxml_LIBRARY "debug;${scxml_LIBRARY_DEBUG};optimized;${scxml_LIBRARY_RELEASE}")
+ELSEIF(scxml_LIBRARY_DEBUG)
+  SET(scxml_LIBRARY ${scxml_LIBRARY_DEBUG})
+ELSEIF(scxml_LIBRARY_RELEASE)
+  SET(scxml_LIBRARY ${scxml_LIBRARY_RELEASE})
+ENDIF()
+

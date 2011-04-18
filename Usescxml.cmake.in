@@ -1,0 +1,22 @@
+###########################################################################
+#
+#  Library:   MAF
+#
+###########################################################################
+
+#
+# This module is provided as scxml_USE_FILE by scxmlConfig.cmake. 
+# It can be INCLUDED in a project to load the needed compiler and linker
+# settings to use scxml.
+#
+ 
+IF(NOT scxml_USE_FILE_INCLUDED)
+  SET(scxml_USE_FILE_INCLUDED 1)
+  
+  # Add include directories needed to use scxml.
+  INCLUDE_DIRECTORIES(${scxml_INCLUDE_DIRS})
+ 
+  # Add link directories needed to use scxml.
+  LINK_DIRECTORIES(${scxml_LIBRARY_DIRS})
+ 
+ENDIF()

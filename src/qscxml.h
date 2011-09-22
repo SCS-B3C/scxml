@@ -228,7 +228,7 @@ class QtScxmlSnoopInternal : public QObject
             if (parent()) parent()->deleteLater(); 
             }
 
-        signals:
+        Q_SIGNALS:
             void signal (const QVariantList &);
     };
     class QtScxmlSnoop: public QObject
@@ -295,7 +295,7 @@ class QtScxmlSnoopInternal : public QObject
                             list << v;
 
                         }
-                        emit inobj->signal (list);
+                        Q_EMIT inobj->signal (list);
                     }
                     --id;
                 }
